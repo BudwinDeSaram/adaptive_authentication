@@ -5,8 +5,6 @@ from flask import jsonify
 MODEL_FOLDER = "/home/flexfringe/model"
 os.makedirs(MODEL_FOLDER, exist_ok=True)
 
-app.config["MODEL_FOLDER"] = MODEL_FOLDER
-
 MODEL_DAT_PATH = os.path.join(MODEL_FOLDER, "model.dat")
 PREDICT_DAT_PATH = os.path.join(MODEL_FOLDER, "predict.dat")
 RESULT_FILE_PATH = os.path.join(MODEL_FOLDER, "model.dat.ff.final.json.result")
@@ -52,15 +50,18 @@ def predict(data):
             for line in result_content:
                 if '-inf' in line:
                     error_count += 1
+            
+            return jsonify({
+                "error_count": error_count
+            }), 200
 
         except FileNotFoundError:
             print ("Result file not found.")
-
-        return error_count 
+            return jsonify({"error": "Result file not found"}), 500        
 
     except Exception as e:
         print (e)
-        return
+        return jsonify({"error": str(e)}), 500
 
 
 def updatelsm(data):

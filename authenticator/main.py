@@ -1,8 +1,14 @@
+import os
 from flask import Flask
 from authentication import get_details, process_data
 from flexfringe import predict, updatelsm
 
 app = Flask(__name__)
+
+MODEL_FOLDER = "/home/flexfringe/model"
+os.makedirs(MODEL_FOLDER, exist_ok=True)
+
+app.config["MODEL_FOLDER"] = MODEL_FOLDER
 
 # Endpoint 1: Predict with flexfringe
 @app.route('/predict', methods=['POST'])
@@ -17,8 +23,8 @@ def process_file():
 def update_dat_file():
     request_data = get_details()
     data = process_data(request_data)
-    updatelsm(data)
-    return 
+    results = updatelsm(data)
+    return results
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)

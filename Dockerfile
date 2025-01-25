@@ -7,6 +7,9 @@ RUN set -ex && \
     sudo libstdc++ cmake g++ gcc bash git linux-headers libpthread-stubs make \
     libpq python3-dev py3-pip py3-wheel
 
+# Create a non-root user and group
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
 # Set up the working directory for flexfringe
 WORKDIR /flexfringe
 
@@ -22,11 +25,15 @@ WORKDIR /app
 # Copy the Flask application into the container
 COPY authenticator/main.py ./
 
-# Create necessary folders
-RUN mkdir -p /home/flexfringe/model 
+# Create necessary folders and adjust ownership to the non-root user
+RUN mkdir -p /home/flexfringe/model && \
+    chown -R appuser:appgroup /home/flexfringe /app /flexfringe
 
 # Set up Python dependencies for Flask
 RUN pip install flask user-agents 
+
+# Switch to the non-root user
+USER appuser
 
 WORKDIR /home/flexfringe
 COPY . .
@@ -36,4 +43,4 @@ RUN cp /flexfringe/flexfringe .
 EXPOSE 8080
 
 # Set the entry point to run the Flask application
-ENTRYPOINT ["python3", "main.py"]
+ENTRYPOINT ["python3", "authenticator/main.py"]

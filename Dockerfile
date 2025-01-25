@@ -8,7 +8,7 @@ RUN set -ex && \
     libpq python3-dev py3-pip py3-wheel
 
 # Create a non-root user and group
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN addgroup -S appgroup && adduser -S 10005 -G appgroup
 
 # Set up the working directory for flexfringe
 WORKDIR /flexfringe
@@ -27,13 +27,13 @@ COPY authenticator/main.py ./
 
 # Create necessary folders and adjust ownership to the non-root user
 RUN mkdir -p /home/flexfringe/model && \
-    chown -R appuser:appgroup /home/flexfringe /app /flexfringe
+    chown -R 10005:appgroup /home/flexfringe /app /flexfringe
 
 # Set up Python dependencies for Flask
 RUN pip install flask user-agents 
 
 # Switch to the non-root user
-USER appuser
+USER 10005
 
 WORKDIR /home/flexfringe
 COPY . .

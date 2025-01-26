@@ -1,0 +1,48 @@
+openapi: 3.0.0
+info:
+  title: LSM Auth
+  version: 1.0.0
+
+paths:
+  /predict:
+    post:
+      summary: Predict with FlexFringe
+      description: Process user data and predict outcomes using the FlexFringe model      
+      responses:
+        '200':
+          description: Successful prediction
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: Error count from the prediction
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+      deprecated: false
+      security: []
+
+  /update-lsm:
+    post:
+      summary: Replace or create LSM model
+      description: Update or create the LSM model with new data     
+      responses:
+        '200':
+          description: Successful model update
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: string
+                    description: Results of the LSM model update
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+      deprecated: false
+      security: []

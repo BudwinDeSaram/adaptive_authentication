@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from authentication import get_details, process_data
+from processdata import get_details, process_data
 from flexfringe import predict, updatelsm
 
 app = Flask(__name__)

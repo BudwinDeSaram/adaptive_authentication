@@ -1,5 +1,5 @@
 import hashlib
-from flask import request, jsonify
+from flask import request
 from user_agents import parse
 
 def get_details():

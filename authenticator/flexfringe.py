@@ -12,7 +12,7 @@ RESULT_FILE_PATH = os.path.join(MODEL_FOLDER, "model.dat.ff.final.json.result")
 def predict(data):
     if not data:
         print ("No data provided")
-        return
+        return None
 
     try:
         with open(PREDICT_DAT_PATH, "w") as dat_file:
@@ -51,23 +51,21 @@ def predict(data):
                 if '-inf' in line:
                     error_count += 1
             
-            return jsonify({
-                "error_count": error_count
-            }), 200
+            return error_count
 
         except FileNotFoundError:
             print ("Result file not found.")
-            return jsonify({"error": "Result file not found"}), 500        
+            return None        
 
     except Exception as e:
         print (e)
-        return jsonify({"error": str(e)}), 500
+        return None
 
 
 def updatelsm(data):
     if not data:
         print ("No data provided")
-        return       
+        return None 
 
     if not os.path.exists(MODEL_DAT_PATH):
         with open(MODEL_DAT_PATH, "w") as dat_file:
@@ -105,10 +103,10 @@ def updatelsm(data):
         if result.returncode == 0:
             return jsonify({
                 "message": f"Data appended to '{MODEL_DAT_PATH}' and processed successfully"
-            }), 200
+            })
         else:
             return jsonify({
                 "error": "Error processing model.dat with flexfringe"
-            }), 500
+            })
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e)})

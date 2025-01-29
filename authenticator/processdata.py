@@ -1,5 +1,5 @@
 import hashlib
-from flask import request
+from flask import request, jsonify
 from user_agents import parse
 
 def get_details():
@@ -14,16 +14,17 @@ def get_details():
     os = parsed_ua.os.family
 
     request_data = request.get_json()
-    dwell_time = request_data.get('dwell_time', 0) 
-    keystroke = request_data.get('keystroke', 0)  
+
+    useremail = request_data.get('useremail')   
+    dwellTime = request_data.get('dwellTime', 0) 
 
     return {
         "ip": ip_address,
         "browser": browser,
         "device": device,
         "os": os,
-        "dwell_time": dwell_time,
-        "keystroke": keystroke,
+        "dwellTime": dwellTime,
+        "useremail": useremail,
     }
 
 # Function to process and scale data
@@ -39,8 +40,8 @@ def process_data(request_data):
         "browser": deterministic_scale(request_data.get("browser")),
         "device": deterministic_scale(request_data.get("device")),
         "os": deterministic_scale(request_data.get("os")),
-        "dwell_time": deterministic_scale(request_data.get("dwell_time")),
-        "keystroke": deterministic_scale(request_data.get("keystroke"))
+        "dwellTime": deterministic_scale(request_data.get("dwellTime")),
+        "useremail": deterministic_scale(request_data.get("useremail"))
     }
 
     return " ".join(map(str, processed_data.values()))

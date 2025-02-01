@@ -91,7 +91,7 @@ def process_file():
     request_data = get_details()
     global abagingo_data
     abagingo_data = process_data(request_data)
-    error_count = predict(abagingo_data)
+    error_count = predict(abagingo_data, useremail)
     result = mfa(error_count, useremail)
     if result.status == "User blocked":
         users_collection.update_one({"useremail": useremail}, {"$set": {"blocked": True}})
@@ -100,9 +100,10 @@ def process_file():
 # Replace or create LSM model
 @app.route('/update-lsm', methods=['POST'])
 def update_dat_file():
+    useremail = request.get_json().get('useremail')
     request_data = get_details()
     data = process_data(request_data)
-    results = updatelsm(data)
+    results = updatelsm(data, useremail)
     return results
 
 # Route to verify OTP

@@ -5,16 +5,15 @@ from flask import jsonify
 MODEL_FOLDER = "/home/flexfringe/model"
 os.makedirs(MODEL_FOLDER, exist_ok=True)
 
-MODEL_DAT_PATH = os.path.join(MODEL_FOLDER, "model.dat")
-PREDICT_DAT_PATH = os.path.join(MODEL_FOLDER, "predict.dat")
-RESULT_FILE_PATH = os.path.join(MODEL_FOLDER, "model.dat.ff.final.json.result")
-
-def predict(data):
+def predict(data, useremail):
     if not data:
         print ("No data provided")
         return None
 
     try:
+        PREDICT_DAT_PATH = os.path.join(MODEL_FOLDER, f"{useremail}_predict.dat")
+        RESULT_FILE_PATH = os.path.join(MODEL_FOLDER, f"{useremail}_model.dat.ff.final.json.result")
+
         with open(PREDICT_DAT_PATH, "w") as dat_file:
             dat_file.write("1 100" + "\n")
             dat_file.write("1 6 " + data + "\n") 
@@ -33,7 +32,7 @@ def predict(data):
         
         print ("Data file created")
 
-        command = "cd /home/flexfringe && ./flexfringe --ini /home/flexfringe/ini/aic.ini /home/flexfringe/model/predict.dat --mode=predict --aptafile=/home/flexfringe/model/model.dat.ff.final.json"
+        command = f"cd /home/flexfringe && ./flexfringe --ini /home/flexfringe/ini/aic.ini {PREDICT_DAT_PATH} --mode=predict --aptafile={RESULT_FILE_PATH}"
 
         result = subprocess.run(
             [command],
@@ -62,10 +61,12 @@ def predict(data):
         return None
 
 
-def updatelsm(data):
+def updatelsm(data, useremail):
     if not data:
         print ("No data provided")
         return None 
+    
+    MODEL_DAT_PATH = os.path.join(MODEL_FOLDER, f"{useremail}_model.dat")
 
     if not os.path.exists(MODEL_DAT_PATH):
         with open(MODEL_DAT_PATH, "w") as dat_file:

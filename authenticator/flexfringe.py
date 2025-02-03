@@ -8,11 +8,15 @@ os.makedirs(MODEL_FOLDER, exist_ok=True)
 def predict(data, useremail):
     if not data:
         print ("No data provided")
-        return None
+        error_count = 2
+        return error_count
+    
+    username = useremail.split("@")[0].replace(".", "_")
 
     try:
-        PREDICT_DAT_PATH = os.path.join(MODEL_FOLDER, f"{useremail}_predict.dat")
-        RESULT_FILE_PATH = os.path.join(MODEL_FOLDER, f"{useremail}_model.dat.ff.final.json.result")
+        PREDICT_DAT_PATH = os.path.join(MODEL_FOLDER, f"{username}_predict.dat")
+        APTAFILE_FILE_PATH = os.path.join(MODEL_FOLDER, f"{username}_model.dat.ff.final.json")
+        RESULT_FILE_PATH = os.path.join(MODEL_FOLDER, f"{username}_model.dat.ff.final.json.result")
 
         with open(PREDICT_DAT_PATH, "w") as dat_file:
             dat_file.write("1 100" + "\n")
@@ -32,7 +36,7 @@ def predict(data, useremail):
         
         print ("Data file created")
 
-        command = f"cd /home/flexfringe && ./flexfringe --ini /home/flexfringe/ini/aic.ini {PREDICT_DAT_PATH} --mode=predict --aptafile={RESULT_FILE_PATH}"
+        command = "cd /home/flexfringe && ./flexfringe --ini /home/flexfringe/ini/aic.ini " + PREDICT_DAT_PATH + " --mode=predict --aptafile=" + APTAFILE_FILE_PATH
 
         result = subprocess.run(
             [command],
@@ -43,30 +47,37 @@ def predict(data, useremail):
 
         error_count = 0
         try:
-            with open(RESULT_FILE_PATH, "r") as result_file:
-                result_content = result_file.readlines()
-            
-            for line in result_content:
-                if '-inf' in line:
-                    error_count += 1
-            
-            return error_count
+            if result.returncode == 0:
+                with open(RESULT_FILE_PATH, "r") as result_file:
+                    result_content = result_file.readlines()
+                
+                for line in result_content:
+                    if '-inf' in line:
+                        error_count += 1
+                
+                return error_count
+            else:
+                print ("Error processing predict.dat with flexfringe")
+                error_count = 2
+                return error_count
 
         except FileNotFoundError:
             print ("Result file not found.")
-            return None        
+            error_count = 2
+            return error_count        
 
     except Exception as e:
         print (e)
-        return None
+        error_count = 2
+        return error_count
 
 
 def updatelsm(data, useremail):
     if not data:
         print ("No data provided")
         return None 
-    
-    MODEL_DAT_PATH = os.path.join(MODEL_FOLDER, f"{useremail}_model.dat")
+    username = useremail.split("@")[0].replace(".", "_")
+    MODEL_DAT_PATH = os.path.join(MODEL_FOLDER, f"{username}_model.dat")
 
     if not os.path.exists(MODEL_DAT_PATH):
         with open(MODEL_DAT_PATH, "w") as dat_file:

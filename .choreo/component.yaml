@@ -1,6 +1,6 @@
 schemaVersion: 1.1
  
- endpoints:
+endpoints:
    - name: endpoints
      service:
        basePath: /

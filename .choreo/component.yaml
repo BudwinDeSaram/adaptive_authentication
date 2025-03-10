@@ -1,11 +1,11 @@
 schemaVersion: 1.1
-
-endpoints:
-  - name: endpoint
-      service:
-        basePath: /
-        port: 8080
-      type: REST
-      networkVisibilities:
-        - Public
-      schemaFilePath: openapi.yaml
+ 
+ endpoints:
+   - name: endpoints
+     service:
+       basePath: /
+       port: 8080
+     type: REST
+     networkVisibilities:
+       - Public
+     schemaFilePath: openapi.yaml

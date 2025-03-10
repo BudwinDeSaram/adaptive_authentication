@@ -8,6 +8,22 @@ paths:
     post:
       summary: Predict with FlexFringe
       description: Process user data and predict outcomes using the FlexFringe model      
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                useremail:
+                  type: string
+                  format: email
+                  description: User's email address
+                dwellTime:
+                  type: string
+                  description: User's dwellTime
+              required:
+                - useremail
       responses:
         '200':
           description: Successful prediction
@@ -20,7 +36,6 @@ paths:
           description: Bad request
         '500':
           description: Internal server error
-
       deprecated: false
       security: []
 
@@ -28,6 +43,22 @@ paths:
     post:
       summary: Replace or create LSM model
       description: Update or create the LSM model with new data     
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                useremail:
+                  type: string
+                  format: email
+                  description: User's email address
+                dwellTime:
+                  type: string
+                  description: User's dwellTime
+              required:
+                - useremail
       responses:
         '200':
           description: Successful model update
@@ -43,6 +74,5 @@ paths:
           description: Bad request
         '500':
           description: Internal server error
-
       deprecated: false
       security: []

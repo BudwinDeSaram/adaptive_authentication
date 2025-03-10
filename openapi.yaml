@@ -3,6 +3,9 @@ info:
   title: LSM Auth
   version: 1.0.0
 
+servers:
+  - url: http://localhost:8080
+
 paths:
   /predict:
     post:

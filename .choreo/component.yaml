@@ -1,22 +1,9 @@
 schemaVersion: 1.1
 
 endpoints:
-  - name: update_lsm
-    displayName: Update LSM
-    service:
-      basePath: /update-lsm
-      port: 8080
+  - name: Endpoint
+    context: /
+    port: 8080
     type: REST
-    networkVisibilities:
-      - Public
-    schemaFilePath: openapi.yaml
-
-  - name: predict
-    displayName: Predict
-    service:
-      basePath: /predict
-      port: 8080
-    type: REST
-    networkVisibilities:
-      - Public
+    networkVisibilities: Public
     schemaFilePath: openapi.yaml

@@ -80,11 +80,12 @@ def updatelsm(data, useremail):
     MODEL_DAT_PATH = os.path.join(MODEL_FOLDER, f"{username}_model.dat")
 
     if not os.path.exists(MODEL_DAT_PATH):
-        os.makedirs(os.path.dirname(MODEL_DAT_PATH), exist_ok=True)  
-        os.chmod(MODEL_DAT_PATH, 0o777)
-        
+        os.makedirs(os.path.dirname(MODEL_DAT_PATH), exist_ok=True)          
+
         with open(MODEL_DAT_PATH, "w") as dat_file:
             dat_file.write("1 100" + "\n") 
+
+        os.chmod(MODEL_DAT_PATH, 0o777)
 
     try:
         with open(MODEL_DAT_PATH, "a") as dat_file:

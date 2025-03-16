@@ -80,6 +80,14 @@ def updatelsm(data, useremail):
     MODEL_DAT_PATH = os.path.join(MODEL_FOLDER, f"{username}_model.dat")
 
     if not os.path.exists(MODEL_DAT_PATH):
+        command = "RUN chmod -R 777 " + MODEL_DAT_PATH
+        subprocess.run(
+            [command],
+            shell = True,
+            capture_output=False,
+            text=True
+        )
+
         with open(MODEL_DAT_PATH, "w") as dat_file:
             dat_file.write("1 100" + "\n") 
 

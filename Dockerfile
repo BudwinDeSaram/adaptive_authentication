@@ -20,8 +20,7 @@ WORKDIR /app
 COPY authenticator/main.py ./
 
 RUN mkdir -p /home/flexfringe/model && \
-    chown -R 10005:appgroup /home/flexfringe /app /flexfringe && \
-    chmod -R 777 /home/flexfringe/model
+    chown -R 10005:appgroup /home/flexfringe /app /flexfringe    
 
 RUN pip install flask user-agents flask-cors pymongo[srv]==3.12
 
@@ -30,6 +29,8 @@ USER 10005
 WORKDIR /home/flexfringe
 COPY . .
 RUN cp /flexfringe/flexfringe . 
+
+RUN chmod -R 777 /home/flexfringe/model
 
 EXPOSE 8080
 

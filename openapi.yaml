@@ -33,8 +33,11 @@ paths:
           content:
             application/json:
               schema:
-                type: integer
-                description: Error count from the prediction
+                type: object
+                properties:
+                  result:
+                    type: integer
+                    description: Error count from the prediction
         '400':
           description: Bad request
         '500':

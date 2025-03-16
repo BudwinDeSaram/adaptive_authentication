@@ -75,7 +75,7 @@ def predict(data, useremail):
 def updatelsm(data, useremail):
     if not data:
         print ("No data provided")
-        return None 
+        return jsonify({"message": "none"}) 
     username = useremail.split("@")[0].replace(".", "_")
     MODEL_DAT_PATH = os.path.join(MODEL_FOLDER, f"{username}_model.dat")
 
@@ -114,11 +114,11 @@ def updatelsm(data, useremail):
 
         if result.returncode == 0:
             return jsonify({
-                "message": f"Data appended to '{MODEL_DAT_PATH}' and processed successfully"
+                "message": "success"
             })
         else:
             return jsonify({
-                "error": "Error processing model.dat with flexfringe"
+                "message": "error"
             })
     except Exception as e:
-        return jsonify({"error": str(e)})
+        return jsonify({"message": "error"})

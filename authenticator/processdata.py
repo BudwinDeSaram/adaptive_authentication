@@ -2,21 +2,19 @@ import hashlib
 from flask import request
 from user_agents import parse
 
-def get_details():
-    
-    ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
+def get_details():   
+    request_data = request.get_json()
 
-    user_agent = request.headers.get('User-Agent', '')
+    useremail = request_data.get('useremail')   
+    ip_address = request_data.get('ip')
+    user_agent = request_data.get('userAgent')
+    dwellTime = request_data.get('dwellTime', 0)
+
     parsed_ua = parse(user_agent)
 
     device = parsed_ua.device.family
     browser = parsed_ua.browser.family
-    os = parsed_ua.os.family
-
-    request_data = request.get_json()
-
-    useremail = request_data.get('useremail')   
-    dwellTime = request_data.get('dwellTime', 0) 
+    os = parsed_ua.os.family    
 
     return {
         "ip": ip_address,

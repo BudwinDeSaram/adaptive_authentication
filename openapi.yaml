@@ -22,11 +22,15 @@ paths:
                   type: string
                   format: email
                   description: User's email address
-                dwellTime:
+                ip:
                   type: string
-                  description: User's dwellTime
+                  description: User's ip
+                dwelltime:
+                  type: string
+                  description: User's dwelltime
               required:
                 - useremail
+                - ip
       responses:
         '200':
           description: Successful prediction
@@ -60,11 +64,15 @@ paths:
                   type: string
                   format: email
                   description: User's email address
-                dwellTime:
+                ip:
                   type: string
-                  description: User's dwellTime
+                  description: User's ip
+                dwelltime:
+                  type: string
+                  description: User's dwelltime
               required:
                 - useremail
+                - ip
       responses:
         '200':
           description: Successful model update

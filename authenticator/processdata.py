@@ -7,9 +7,9 @@ def get_details():
 
     useremail = request_data.get('useremail')   
     ip_address = request_data.get('ip')
-    user_agent = request_data.get('userAgent')
     dwellTime = request_data.get('dwellTime', 0)
-
+    
+    user_agent = request.headers.get('User-Agent', '')
     parsed_ua = parse(user_agent)
 
     device = parsed_ua.device.family

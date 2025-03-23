@@ -1,4 +1,5 @@
 import os
+import logging
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
@@ -20,6 +21,13 @@ users_collection = db['users']
 
 login_attempts = {}
 abagingo_data = {}
+
+logging.basicConfig(filename="logfile.log",
+                    format='%(asctime)s %(message)s',
+                    filemode='w')
+
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 
 # Create an account
 @app.route('/create-account', methods=['POST'])
@@ -43,6 +51,7 @@ def create_account():
         "securityAnswer": securityAnswer,
         "blocked": False
     })
+    logger.info("User account created: " + useremail)
     return jsonify({"message": "Account created successfully"})
 
 # Route for login
@@ -59,6 +68,7 @@ def login():
 
     if user["blocked"]:
         print(f"Access denied for {useremail}")
+        logger.info("Access denied for " + useremail)
         return jsonify({
                 "status": "User blocked"
             })
@@ -66,6 +76,7 @@ def login():
     if user["password"] == password:
         if useremail in login_attempts and 1 < login_attempts[useremail] <= 3:
             login_attempts[useremail] = 0
+            logger.info("Security question given to " + useremail)
             return jsonify({
                 "status": "Security question",
                 "securityQuestion": user["securityQuestion"]
@@ -93,8 +104,10 @@ def process_file():
     abagingo_data = process_data(request_data)
     error_count = predict(abagingo_data, useremail)
     result = mfa(error_count, useremail)
+    logger.info("Prediction done: " + useremail)
     if result.status == "User blocked":
         users_collection.update_one({"useremail": useremail}, {"$set": {"blocked": True}})
+        logger.info("User blocked " + useremail)
     return result
 
 # Replace or create LSM model
@@ -104,6 +117,7 @@ def update_dat_file():
     request_data = get_details()
     data = process_data(request_data)
     results = updatelsm(data, useremail)
+    logger.info("LSM model updated: " + useremail)
     return results
 
 # Route to verify OTP
@@ -115,6 +129,7 @@ def verify_otp():
     if result.status == "success":
         global abagingo_data
         updatelsm(abagingo_data)
+        logger.info("OTP verified")
     return result    
 
 @app.route("/verify-securityquestion", methods=["POST"])
@@ -128,7 +143,8 @@ def verify_security():
         return jsonify({"status": "failure"})
 
     if user["securityAnswer"].lower() == answer.lower():
-        updatelsm(abagingo_data)
+        updatelsm(abagingo_data, useremail)
+        logger.info("Security question verified: " + useremail)
         return jsonify({"status": "success"})
     return jsonify({"status": "failure"})
 

@@ -8,16 +8,20 @@ from flexfringe import predict, updatelsm
 from mfa import mfa, verify_otp_code
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)   # allow cross-origin requests from any domain
 
-MODEL_FOLDER = "/home/flexfringe/model"
-os.makedirs(MODEL_FOLDER, exist_ok=True)
+MODEL_FOLDER = os.getenv("MODEL_FOLDER")
+os.makedirs(MODEL_FOLDER, exist_ok=True)  # create the model folder if it doesn't exist
 
 app.config["MODEL_FOLDER"] = MODEL_FOLDER
 
-client = MongoClient("mongodb+srv://dbadmin:qwe123@cluster0.dkfxt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")  
-db = client['lsmauth']
-users_collection = db['users']
+DB_CONNECTION_STRING = os.getenv("DB_CONNECTION_STRING")
+DB_CLIENT = os.getenv("DB_CLIENT")
+DB_COLLECTION = os.getenv("DB_COLLECTION")
+
+client = MongoClient(DB_CONNECTION_STRING)  
+db = client[DB_CLIENT]
+users_collection = db[DB_COLLECTION]
 
 login_attempts = {}
 abagingo_data = {}
@@ -149,4 +153,4 @@ def verify_security():
     return jsonify({"status": "failure"})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=8080)  #allow all external connections without restrictions

@@ -22,7 +22,7 @@ COPY authenticator/main.py ./
 RUN mkdir -p /home/flexfringe/model && \
     chown -R 10005:appgroup /home/flexfringe /app /flexfringe
 
-RUN pip install flask user-agents flask-cors pymongo[srv]==3.12
+RUN pip install flask user-agents flask-cors bcrypt pymongo[srv]==3.12
 
 USER 10005
 

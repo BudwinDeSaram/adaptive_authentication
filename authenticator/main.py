@@ -1,5 +1,6 @@
 import os
 import logging
+import bcrypt
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
@@ -48,6 +49,8 @@ def create_account():
     if users_collection.find_one({"useremail": useremail}):
         return jsonify({"message": "Useremail already exists"})
 
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    password = hashed_password.decode('utf-8')
     users_collection.insert_one({
         "useremail": useremail,
         "password": password,
@@ -77,7 +80,7 @@ def login():
                 "status": "User blocked"
             })
 
-    if user["password"] == password:
+    if bcrypt.checkpw(password.encode('utf-8'), user["password"].encode('utf-8')):
         if useremail in login_attempts and 1 < login_attempts[useremail] <= 3:
             login_attempts[useremail] = 0
             logger.info("Security question given to " + useremail)
